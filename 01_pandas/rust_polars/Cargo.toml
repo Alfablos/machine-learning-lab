@@ -1,0 +1,9 @@
+[package]
+name = "car_sales"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+polars = { version = "0.50", default-features = false, features = ["lazy", "csv", "strings", "regex", "fmt_no_tty"] }
+mimalloc = "0.1"
+regex = "1.11.1"

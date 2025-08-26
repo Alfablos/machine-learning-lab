@@ -35,7 +35,12 @@
           with pythonPackages;
           [
             pandas polars
-            matplotlib altair
+
+            # matplotlib with ipympl backend!
+            matplotlib
+            ipympl
+
+            altair
             # pytorch-bin
             # tensorflow-bin
             notebook

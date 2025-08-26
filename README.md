@@ -8,6 +8,13 @@ Drafts, tests and projects implementations for the DS/ML course, rust tests and 
 nix develop
 ```
 
+## Python
+Using `Python 3.12` as Tensorflow still seems incompatible with 3.13.
+
+## Rust
+The `1.91.0-nightly` is being used as some features used are still unstable.
+
+
 
 ## Sources
 

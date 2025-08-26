@@ -1,0 +1,11 @@
+[package]
+name = "rust_numpy"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+ndarray = { version = "0.16", default-features = false, features = ["std"] }
+polars = { version = "0.50", default-features = false, features = ["fmt_no_tty"] }
+
+
+

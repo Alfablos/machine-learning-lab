@@ -1,0 +1,34 @@
+# https://hub.docker.com/r/cschranz/gpu-jupyter#issues-and-contributing
+# # https://github.com/iot-salzburg/gpu-jupyter
+
+services:
+  gpu-jupyter:
+    image: docker.io/cschranz/gpu-jupyter:v1.9_cuda-12.6_ubuntu-24.04_python-only
+    # Set hardware limits: one GPU, max. 48GB RAM, max. 31 GPUs
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: cdi
+              device_ids:
+                - nvidia.com/gpu=0
+              capabilities: [gpu]
+        # limits:
+        #   cpus: "31.0"
+        #   memory: 48g
+    ports:
+      - 8888:8888
+    volumes:
+      - ./:/home/jovyan/work
+    environment:
+      GRANT_SUDO: "yes"
+      JUPYTER_ENABLE_LAB: "yes"
+      NB_UID: ${JUPYTER_UID:-1000}
+      NB_GID: ${JUPYTER_GID:-1000}
+      JUPYTER_TOKEN: "123"        # ${JUPYTER_TOKEN}
+    # enable sudo permissions
+    user:
+      "root"
+
+
+

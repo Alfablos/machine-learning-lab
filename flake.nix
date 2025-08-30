@@ -40,6 +40,8 @@
             matplotlib
             ipympl
 
+            scikit-learn
+
             altair
             # pytorch-bin
             # tensorflow-bin

@@ -6,6 +6,9 @@ mlutils.py
 import math
 from copy import deepcopy
 
+import numpy as np
+
+# Single variable gradient descent utilities
 
 def compute_cost_v1(x, y, w, b):
     """
@@ -27,6 +30,8 @@ def compute_cost_v1(x, y, w, b):
         this_cost = (f_wb - y[i])**2
         cost += this_cost
     return (1/(2*m)) * cost
+
+
 
 def compute_gradient_v1(x ,y, w, b):
     """
@@ -61,6 +66,7 @@ def compute_gradient_v1(x ,y, w, b):
     dj_db = dj_db / m
 
     return dj_dw, dj_db
+
 
 
 def gradient_descend_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=compute_cost_v1, gradient_f=compute_gradient_v1):
@@ -111,3 +117,106 @@ def gradient_descend_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=compute_co
             print('====================')
     
     return w, b ,j_hist, p_hist
+
+
+
+# Multi-variable gradient descent utilities
+
+def compute_cost_multi_v1(X, y, w, b):
+    """
+    compute the cost cost value
+    Args:
+      X (ndarray (m,n)): Data, m examples with n features
+      y (ndarray (m,)) : target values
+      w (ndarray (n,)) : model parameters  
+      b (scalar)       : model parameter
+      
+    Returns:
+      cost (scalar): cost
+    """
+
+    m = X.shape[0]
+
+    cost = 0.0
+
+    for i in range(m):
+        # It's a DOT product this time; this is the value of the prediction
+        f_wb = np.dot(X[i], w) + b # dot product vector by scalar = scalar
+        cost += (f_wb - y[i])**2
+    return cost / (2 * m)
+
+
+
+def compute_gradient_multi_v1(X, y, w, b):
+    """
+    Computes the gradient for linear regression 
+    Args:
+      X (ndarray (m,n)): Data, m examples with n features
+      y (ndarray (m,)) : target values
+      w (ndarray (n,)) : model parameters  
+      b (scalar)       : model parameter
+      
+    Returns:
+      dj_dw (ndarray (n,)): The gradient of the cost w.r.t. the parameters w. 
+      dj_db (scalar):       The gradient of the cost w.r.t. the parameter b. 
+    """
+
+    m, n = X.shape # it's now 2D: rows are examples, columns are the features
+    dj_dw = np.zeros((n,)) # it's now a vector of gradients, one for each w (there's one w for each feature)
+    dj_db = 0
+
+    for i in range(m):
+        # f_wb is now a dot product between vector X[i] and vector w (one w value for each feature) = still a scalar
+        f_wb = np.dot(X[i], w) + b
+        
+        err = f_wb - y[i]
+        for j in range(n):
+            # compute the gradient (partial derivative) for each
+            dj_dw[j] += err * X[i, j] # ith row, jth column (feature)
+        dj_db += err
+
+    dj_dw /= m
+    dj_db /= m
+
+    return dj_dw, dj_db
+
+
+
+def gradient_descent_multi_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=compute_cost_multi_v1, gradient_f=compute_gradient_multi_v1):
+    """
+    Performs gradient descent to fit w and b with n_iter iterations and an alpha value of a.
+    Args:
+      x ndarray(m, n):                        feature vector.
+      y dnarray(m,):                          target vector.
+      initial_w ndarray(n,):                  initial model w values
+      initial_b scalar:                       initial model b.
+      a float:                                alpha value.
+      cost_f function:                        callback to compute the cost.
+      gradient_f function:                    callback to compute the gradient.
+    Returns:
+      w (ndarray(n,)),b (scalar):             Updated parameters after running gradient descent.
+      j_hist list(scalar):                    History of costs (for graphing purposes).
+    """
+    
+    # Avoiding pass-by-reference creating a deep copy so that initial_* are not altered
+    w, b = deepcopy(initial_w), deepcopy(initial_b)
+    print(f'Initiating gradient descent with initial values w={w}, b={b:0.3f}')
+    j_hist = []
+
+    for i in range(n_iter):
+        dj_dw, dj_db = gradient_f(x, y, w, b)
+    
+        w = w - a * dj_dw
+        b = b - a * dj_db
+    
+        # Save the history of the cost for the first 100000 iterations
+        if i < 100000:
+            j_hist.append(cost_f(x, y, w, b))
+    
+        # Print log every 1/10 of total iterations
+        if i % (math.ceil( n_iter / 10)) == 0:
+            print(f"Iteration {i:4d}: Cost {j_hist[-1]:8.2f}   ")
+
+    return w, b, j_hist
+
+

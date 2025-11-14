@@ -8,6 +8,8 @@ from copy import deepcopy
 
 import numpy as np
 
+from lab_utils_multi import run_gradient_descent, plot_cost_i_w
+
 # Single variable gradient descent utilities
 
 def compute_cost_v1(x, y, w, b):
@@ -220,3 +222,41 @@ def gradient_descent_multi_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=comp
     return w, b, j_hist
 
 
+def plot_cost_with_alpha(X, y, alpha: float, n_iter: int) -> None:
+    if alpha is None:
+        raise ValueError('A value for alpha MUST be specified.')
+
+    if n_iter is None:
+        raise ValueError('A value for n_iter MUST be specified.')
+
+    
+    print(f'Current alpha value: {alpha}.')
+    _, _, hist = run_gradient_descent(
+        X,
+        y,
+        n_iter,
+        alpha=alpha
+    )
+
+    plot_cost_i_w(X, y, hist)
+
+
+
+def z_normalize(x: np.ndarray):
+    """
+    z-zscore normalizes x
+
+    Args:
+      x ndarray(n, m):               feature matrix
+    Returns:
+      x_norm (ndarray(m, n)):        z-score normalized x
+      mu:    (ndarray(n,):           means vector (1 for each feature)
+      sigma  (ndarray(m, n)):        std deviations vector (1 for each feature)
+    """
+
+    mu = np.mean(x, axis=0)
+    sigma = np.std(x, axis=0)
+
+    x_norm = (x - mu) / sigma
+
+    return x_norm, mu, sigma

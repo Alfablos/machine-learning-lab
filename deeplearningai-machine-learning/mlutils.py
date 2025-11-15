@@ -184,7 +184,7 @@ def compute_gradient_multi_v1(X, y, w, b):
 
 
 
-def gradient_descent_multi_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=compute_cost_multi_v1, gradient_f=compute_gradient_multi_v1):
+def gradient_descent_multi_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=compute_cost_multi_v1, gradient_f=compute_gradient_multi_v1, verbose=True):
     """
     Performs gradient descent to fit w and b with n_iter iterations and an alpha value of a.
     Args:
@@ -202,7 +202,7 @@ def gradient_descent_multi_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=comp
     
     # Avoiding pass-by-reference creating a deep copy so that initial_* are not altered
     w, b = deepcopy(initial_w), deepcopy(initial_b)
-    print(f'Initiating gradient descent with initial values w={w}, b={b:0.3f}')
+    if verbose: print(f'Initiating gradient descent with initial values w={w}, b={b:0.3f}')
     j_hist = []
 
     for i in range(n_iter):
@@ -216,7 +216,7 @@ def gradient_descent_multi_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=comp
             j_hist.append(cost_f(x, y, w, b))
     
         # Print log every 1/10 of total iterations
-        if i % (math.ceil( n_iter / 10)) == 0:
+        if i % (math.ceil( n_iter / 10)) == 0 and verbose:
             print(f"Iteration {i:4d}: Cost {j_hist[-1]:8.2f}   ")
 
     return w, b, j_hist
@@ -260,3 +260,60 @@ def z_normalize(x: np.ndarray):
     x_norm = (x - mu) / sigma
 
     return x_norm, mu, sigma
+
+
+
+# Polynomial regression gradient descent utils
+
+
+
+def compute_gradient_matrix(X, y, w, b):
+    """
+    Computes the gradient for linear regression (deals with matrices)
+    Args:
+      X (ndarray (m,n)):   Data, m examples with n features
+      y (ndarray (m,1)):   target values
+      w (ndarray (n,1)):   model parameters  
+      b (scalar):          model parameter
+      
+    Returns:
+      dj_dw (ndarray (n,1)): The gradient of the cost w.r.t. the parameters w. 
+      dj_db (scalar):       The gradient of the cost w.r.t. the parameter b. 
+    """
+
+    m, n = X.shape
+    costs_f_wb = X @ w + b
+    errs = costs_f_wb - y
+    dj_dw = (1/m) * (X.T @ errs) # X must be transposed to get n x m in order to be dot-multiplied with m x o
+    dj_db = (1/m) * np.sum(errs)
+
+    return dj_dw, dj_db
+
+
+
+def gradient_descent_matrix(x, y, a, n_iter):
+    """
+    Performs gradient descent to fit w and b with n_iter iterations and an alpha value of a.
+    Args:
+      x ndarray(m, n):                        feature vector.
+      y dnarray(m,):                          target vector.
+      initial_w ndarray(n,):                  initial model w values
+      initial_b scalar:                       initial model b.
+      a float:                                alpha value.
+      cost_f function:                        callback to compute the cost.
+      gradient_f function:                    callback to compute the gradient.
+    Returns:
+      w (ndarray(n,)),b (scalar):             Updated parameters after running gradient descent.
+      j_hist list(scalar):                    History of costs (for graphing purposes).
+    """
+
+    m, n = x.shape
+    initial_w = np.zeros(n)
+    initial_b = 0
+
+    # x, y, initial_w, initial_b, a, n_iter, cost_f=compute_cost_multi_v1, gradient_f=compute_gradient_multi_v1
+    final_w, final_b, _ = gradient_descent_multi_v1(x, y, initial_w, initial_b, a, n_iter, cost_f=compute_cost_v1, gradient_f=compute_gradient_matrix, verbose=False)
+
+    return final_w, final_b
+
+    

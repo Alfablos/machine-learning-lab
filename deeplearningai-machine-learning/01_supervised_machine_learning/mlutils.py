@@ -1,6 +1,6 @@
 """
 mlutils.py
-  Utility functions for the Machine Learning course
+  Utility functions for the Machine Learning course (custom functions)
 """
 
 import math
@@ -316,4 +316,104 @@ def gradient_descent_matrix(x, y, a, n_iter):
 
     return final_w, final_b
 
+
+## Logistic regression
+
+def sigmoid(z):
+    """
+    Returns the sigmoid function values
+    Arg:
+      z: scalar o np.array
+    """
+    z = np.clip(z, -500, 500)
+    return 1.0/(1.0 + np.exp(-z))
+
+
+def compute_cost_logistic(x, y, w, b, verbose=False, lambda_=None):
+    """
+    Computes cost
+
+    Args:
+      x (ndarray (m,n)): Data, m examples with n features
+      y (ndarray (m,)) : target values
+      w (ndarray (n,)) : model parameters  
+      b (scalar)       : model parameter
+      
+    Returns:
+      cost (scalar): cost
+    """
+
     
+    m, n = x.shape
+    cost = 0.0
+    reg = 0
+
+    for i in range(m):
+        z_i = np.dot(x[i], w) + b
+        f_wb_i = sigmoid(z_i)
+        cost += -y[i]*np.log(f_wb_i) - (1-y[i])*np.log(1-f_wb_i)
+
+    if lambda_ is not None:
+        for j in range(n):       # features
+            reg += (w[j]**2)
+        reg = (lambda_/(2*m)) / reg
+        
+        if verbose:
+            print(f'Regularization cost: {reg}')
+
+    
+    return (cost + reg) / m
+
+
+
+def compute_gradient_logistic(x, y, w, b):
+    """
+    Computes the gradient for linear regression 
+ 
+    Args:
+      x (ndarray (m,n): Data, m examples with n features
+      y (ndarray (m,)): target values
+      w (ndarray (n,)): model parameters  
+      b (scalar)      : model parameter
+    Returns
+      dj_dw (ndarray (n,)): The gradient of the cost w.r.t. the parameters w. 
+      dj_db (scalar)      : The gradient of the cost w.r.t. the parameter b. 
+    """
+
+    m, n = x.shape
+    dj_dw = np.zeros((n,))
+    dj_db = 0.0
+
+    for i in range(m):  # for each example
+        z_i = np.dot(x[i], w) + b
+        f_wb_i = sigmoid(z_i)
+        err_i = f_wb_i - y[i]
+
+        for j in range(n):    # for each feature
+            dj_dw += err_i * x[i, j]
+        
+        dj_db += err_i
+
+    return dj_dw/m, dj_db/m
+
+
+
+def gradient_descent_logistic(x, y, initial_w, initial_b, alpha, n_iter, cost_f=compute_cost_logistic, gradient_f=compute_gradient_logistic, verbose=False, lambda_=None):
+    w, b = deepcopy(initial_w), deepcopy(initial_b)
+    j_history = []
+
+    if verbose: print(f'Initiating gradient descent with initial values w={w}, b={b:0.3f}, alpha={alpha}')
+
+    for i in range(n_iter):
+        dj_dw, dj_db = compute_gradient_logistic(x, y, w, b)
+
+        w = w - alpha * dj_dw
+        b = b - alpha * dj_db
+
+        if i < 100000:
+            j_history.append(compute_cost_logistic(x, y, w, b, verbose, lambda_))
+
+        if i % (math.ceil(n_iter / 10)) == 0 and verbose:
+            print(f"Iteration {i:4d}: Cost {j_history[-1]}   ")
+
+    return w, b, j_history

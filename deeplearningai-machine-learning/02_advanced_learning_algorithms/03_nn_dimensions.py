@@ -91,7 +91,7 @@ W1_l1, b1_l1 = l1.get_weights()
 n_units = l1.get_config()['units']
 print(f'W shape = {W1_l1.shape} (number_of_features, number_of_neurons)')
 print(f'b shape  = {b1_l1.shape} (number_of_neurons)')
-print(f'W1_l1[0] == {n_units} values going in the {n_units} neurons of the layer FOR THE FIRST FEATURE -> {W1_l1[0]}')
-print(f'W1_l1[1] == {n_units} values going in the {n_units} neurons of the layer FOR THE SECOND FEATURE -> {W1_l1[1]}\n')
+print(f'W1_l1[0] == {n_units} values going in the {n_units} neurons of the layer `{l1.name}` FOR THE FIRST FEATURE -> {W1_l1[0]}')
+print(f'W1_l1[1] == {n_units} values going in the {n_units} neurons of the layer `{l1.name}` FOR THE SECOND FEATURE -> {W1_l1[1]}\n')
 
 print(f'b: there\'s only 1 bias per value in `y^ = np.dot(W, X) + b`; b is always a scalar, so there\'s only 1 b per neuron')

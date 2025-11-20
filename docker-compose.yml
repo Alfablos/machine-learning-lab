@@ -6,6 +6,7 @@ services:
     # image: docker.io/cschranz/gpu-jupyter:v1.9_cuda-12.6_ubuntu-24.04_python-only
     # Set hardware limits: one GPU, max. 48GB RAM, max. 31 GPUs
     container_name: gpu-jupyter
+    image: gpu-jupyter:cuda13
     build: ./docker
     deploy:
       resources:

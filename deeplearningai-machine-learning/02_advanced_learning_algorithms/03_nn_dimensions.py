@@ -76,7 +76,7 @@ print(f'Xt shape: {Xt.shape}\nYt shape: {Yt.shape}')
 model: Model = Sequential([
     tf.keras.Input(shape=(2,), name='input'),
     Dense(3, activation='sigmoid', name='l1'),
-    Dense(1, activation='linear', name = 'l2')
+    Dense(1, activation='linear', name='l2')
 ])
 
 model.compile(loss=BinaryCrossentropy(from_logits=True), optimizer=tf.keras.optimizers.Adam(learning_rate=0.01))

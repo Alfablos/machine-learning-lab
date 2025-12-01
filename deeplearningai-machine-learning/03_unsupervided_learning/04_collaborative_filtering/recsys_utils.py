@@ -42,3 +42,8 @@ def load_Movie_List_pd():
     df = pd.read_csv('./data/small_movie_list.csv', header=0, index_col=0,  delimiter=',', quotechar='"')
     mlist = df["title"].to_list()
     return(mlist, df)
+
+
+
+
+

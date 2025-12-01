@@ -17,6 +17,9 @@ RUN pip install \
 RUN pip install mypy tensorflow[and-cuda] types-tensorflow pandas-stubs
 RUN pip uninstall jupyter_contrib_nbextensions -y
 
+# Utils
+RUN pip install tabulate
+
 RUN mamba clean --all -f -y && \
   rm -rf "/home/${NB_USER}/.cache/yarn"
 

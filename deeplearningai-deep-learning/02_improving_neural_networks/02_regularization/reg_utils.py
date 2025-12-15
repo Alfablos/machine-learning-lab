@@ -146,12 +146,12 @@ def backward_propagation(X, Y, cache):
     db3 = 1./m * np.sum(dZ3, axis=1, keepdims = True)
     
     dA2 = np.dot(W3.T, dZ3)
-    dZ2 = np.multiply(dA2, np.int64(A2 > 0))
+    dZ2 = np.multiply(dA2, (A2 > 0).astype(int))
     dW2 = 1./m * np.dot(dZ2, A1.T)
     db2 = 1./m * np.sum(dZ2, axis=1, keepdims = True)
     
     dA1 = np.dot(W2.T, dZ2)
-    dZ1 = np.multiply(dA1, np.int64(A1 > 0))
+    dZ1 = np.multiply(dA1, (A1 > 0).astype(int))
     dW1 = 1./m * np.dot(dZ1, X.T)
     db1 = 1./m * np.sum(dZ1, axis=1, keepdims = True)
     
@@ -200,7 +200,7 @@ def predict(X, y, parameters):
     """
     
     m = X.shape[1]
-    p = np.zeros((1,m), dtype = np.int)
+    p = np.zeros((1,m), dtype = int)
     
     # Forward propagation
     a3, caches = forward_propagation(X, parameters)

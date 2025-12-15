@@ -8,17 +8,17 @@ services:
     container_name: gpu-jupyter
     image: gpu-jupyter:cuda13
     build: ./docker
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: cdi
-              device_ids:
-                - nvidia.com/gpu=0
-              capabilities: [gpu]
-        # limits:
-        #   cpus: "31.0"
-        #   memory: 48g
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: cdi
+    #           device_ids:
+    #             - nvidia.com/gpu=0
+    #           capabilities: [gpu]
+    #     # limits:
+    #     #   cpus: "31.0"
+    #     #   memory: 48g
     ports:
       - 8888:8888
     volumes:

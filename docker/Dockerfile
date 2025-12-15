@@ -18,7 +18,7 @@ RUN pip install mypy tensorflow[and-cuda] types-tensorflow pandas-stubs
 RUN pip uninstall jupyter_contrib_nbextensions -y
 
 # Utils
-RUN pip install tabulate pyvirtualdisplay swig gymnasium
+RUN pip install tabulate pyvirtualdisplay swig gymnasium dlai-tools
 # RUN pip install tabulate pyvirtualdisplay swig gymnasium[box2D]
 
 RUN mamba clean --all -f -y && \

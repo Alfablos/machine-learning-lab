@@ -166,6 +166,8 @@ def conv_forward(A_prev, W, b, hparameters, activation):
     # Save information in "cache" for the backprop
     cache = (A_prev, W, b, hparameters)
 
+    raise RuntimeError('Add activation step here!')
+
     return Z, cache
 
 
